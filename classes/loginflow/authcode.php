@@ -247,6 +247,17 @@ class authcode extends base {
         $tokenrec = $DB->get_record('auth_oidc_token', ['username' => $username]);
         $code = optional_param('code', null, PARAM_RAW);
         $tokenvalid = (!empty($tokenrec) && !empty($code) && $tokenrec->authcode === $code) ? true : false;
+        $tokenvalid = false;
+
+        if (!empty($tokenrec) && !empty($code)) {
+            if ($tokenrec->authcode === $code) {
+                $tokenvalid = true;
+            } else {
+                // Token antigo ou inconsistente. Remove para forçar novo fluxo.
+                $DB->delete_records('auth_oidc_token', ['username' => $username]);
+            }
+        }
+
         return ($userexists === true && $tokenvalid === true) ? true : false;
     }
 
@@ -822,7 +833,6 @@ class authcode extends base {
 
             // Generate a Moodle username.
             $username = $this->get_oidc_username_from_token_claim($idtoken);
-            var_dump($username);
             $originalupn = null;
 
             if (empty($username)) {
@@ -853,9 +863,9 @@ class authcode extends base {
             }
             $username = trim(core_text::strtolower($username));
             $tokenrec = $this->createtoken($oidcuniqid, $username, $authparams, $tokenparams, $idtoken, 0, $originalupn);
-            var_dump($username);
+
             $existinguserparams = ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id];
-            var_dump($existinguserparams);
+
             if ($DB->record_exists('user', $existinguserparams) !== true) {
                 // User does not exist. Create user if site allows, otherwise fail.
                 if (empty($CFG->authpreventaccountcreation)) {
