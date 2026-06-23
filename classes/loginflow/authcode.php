@@ -428,6 +428,7 @@ class authcode extends base {
         if (isloggedin() && !isguestuser() && (empty($tokenrec) || (isset($USER->auth) && $USER->auth !== 'oidc'))) {
             // If user is already logged in and trying to link Microsoft 365 account or use it for OIDC.
             // Check if that Microsoft 365 account already exists in moodle.
+            /*
             $oidcusername = $this->get_oidc_username_from_token_claim($idtoken);
 
             $userrec = $DB->count_records_sql(
@@ -457,6 +458,7 @@ class authcode extends base {
             $this->handlemigration($oidcuniqid, $authparams, $tokenparams, $idtoken, $connectiononly);
             $redirect = (!empty($additionaldata['redirect'])) ? $additionaldata['redirect'] : '/auth/oidc/ucp.php';
             redirect(new url($redirect));
+            */
         } else {
             // Otherwise it's a user logging in normally with OIDC.
             $this->handlelogin($oidcuniqid, $authparams, $tokenparams, $idtoken);
