@@ -891,7 +891,6 @@ class authcode extends base {
                     $eventdata = ['other' => ['username' => $username, 'reason' => $failurereason]];
                     $event = \core\event\user_login_failed::create($eventdata);
                     $event->trigger();
-                    var_dump($username);
                     throw new moodle_exception('errorauthloginfailednouser', 'auth_oidc', null, null, '1');
                 }
             }
