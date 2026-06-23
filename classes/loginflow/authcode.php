@@ -822,7 +822,7 @@ class authcode extends base {
 
             // Generate a Moodle username.
             $username = $this->get_oidc_username_from_token_claim($idtoken);
-
+            var_dump($username);
             $originalupn = null;
 
             if (empty($username)) {
@@ -853,8 +853,9 @@ class authcode extends base {
             }
             $username = trim(core_text::strtolower($username));
             $tokenrec = $this->createtoken($oidcuniqid, $username, $authparams, $tokenparams, $idtoken, 0, $originalupn);
-
+            var_dump($username);
             $existinguserparams = ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id];
+            var_dump($existinguserparams);
             if ($DB->record_exists('user', $existinguserparams) !== true) {
                 // User does not exist. Create user if site allows, otherwise fail.
                 if (empty($CFG->authpreventaccountcreation)) {
@@ -880,7 +881,8 @@ class authcode extends base {
                     $eventdata = ['other' => ['username' => $username, 'reason' => $failurereason]];
                     $event = \core\event\user_login_failed::create($eventdata);
                     $event->trigger();
-                    throw new moodle_exception('errorauthloginfailednouser', 'auth_oidc', null, null, $username);
+                    var_dump($username);
+                    throw new moodle_exception('errorauthloginfailednouser', 'auth_oidc', null, null, '1');
                 }
             }
 
