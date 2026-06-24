@@ -198,7 +198,15 @@ class authcode extends base {
         // Check token exists.
         $tokenrec = $DB->get_record('auth_oidc_token', ['username' => $username]);
         $code = optional_param('code', null, PARAM_RAW);
-        $tokenvalid = (!empty($tokenrec) && !empty($code) && $tokenrec->authcode === $code) ? true : false;
+        if (!empty($tokenrec) && !empty($code)) {
+            if ($tokenrec->authcode === $code) {
+                $tokenvalid = true;
+            } else {
+                // Token antigo ou inconsistente. Remove para forçar novo fluxo.
+                $DB->delete_records('auth_oidc_token', ['username' => $username]);
+                $tokenvalid = true; // tentadno rsolver
+            }
+        }
         return ($userexists === true && $tokenvalid === true) ? true : false;
     }
 
