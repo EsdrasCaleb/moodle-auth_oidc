@@ -664,7 +664,7 @@ class authcode extends base {
                     }
                 }
             }
-            var_dump($user);
+
             $username = $user->username;
             $this->updatetoken($tokenrec->id, $authparams, $tokenparams);
             $user = authenticate_user_login($username, '', true);
