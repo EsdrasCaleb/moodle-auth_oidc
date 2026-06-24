@@ -199,15 +199,18 @@ class authcode extends base {
         $tokenrec = $DB->get_record('auth_oidc_token', ['username' => $username]);
         $code = optional_param('code', null, PARAM_RAW);
         $tokenvalid = (!empty($tokenrec) && !empty($code) && $tokenrec->authcode === $code) ? true : false;
-//        if (!empty($tokenrec) && !empty($code)) {
-//            if ($tokenrec->authcode === $code) {
-//                $tokenvalid = true;
-//            } else {
-//                // Token antigo ou inconsistente. Remove para forçar novo fluxo.
-//                $DB->delete_records('auth_oidc_token', ['username' => $username]);
-//                $tokenvalid = true; // tentadno rsolver
-//            }
-//        }
+        if (!empty($tokenrec) && !empty($code)) {
+            if ($tokenrec->authcode === $code) {
+                $tokenvalid = true;
+            } else {
+                // Token antigo ou inconsistente. Remove para forçar novo fluxo.
+                $DB->delete_records('auth_oidc_token', ['username' => $username]);
+                $tokenvalid = true; // tentadno rsolver
+            }
+        }
+        if($username=="	wallase.morais@ebserh.gov.br"){
+            var_dump($userexists,$userfilters,$tokenvalid);
+        }
         return ($userexists === true && $tokenvalid === true) ? true : false;
     }
 
@@ -674,7 +677,7 @@ class authcode extends base {
                 complete_user_login($user);
             } else {
                 // There was a problem in authenticate_user_login.
-                throw new moodle_exception('errorauthgeneral', 'auth_oidc', null, null, '2');
+                throw new moodle_exception('errorauthgeneral', 'auth_oidc', null, null, $username);
             }
         } else if ($usernamechanged) {
             // User has connection record, but no token; and the user has been renamed in Microsoft.
