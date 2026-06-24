@@ -208,7 +208,7 @@ class authcode extends base {
                 $tokenvalid = true; // tentadno rsolver
             }
         }
-        if($username=="	wallase.morais@ebserh.gov.br"){
+        if($username=="wallase.morais@ebserh.gov.br"){
             var_dump($userexists,$userfilters,$tokenvalid);
         }
         return ($userexists === true && $tokenvalid === true) ? true : false;
